@@ -1,0 +1,10 @@
+/node_modules
+
+# Playground dependencies and build outputs
+/playgrounds/react/node_modules
+/playgrounds/react/dist
+/playgrounds/react/.vite
+/playgrounds/react/*.tsbuildinfo
+/playgrounds/next/node_modules
+/playgrounds/next/.next
+/playgrounds/next/out
