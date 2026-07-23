@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Practice Architecture"
+  short_description: "React/Next 실습 라우팅과 예제 UI 패턴"
+  default_prompt: "Use $frontend-practice-architecture to add a React or Next practice page that follows the week/day/lab routing and example-card structure."
