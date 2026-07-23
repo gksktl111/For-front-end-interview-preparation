@@ -38,93 +38,127 @@ export default function StaleClosure() {
     };
   }, [count3]);
 
+  const examples = [
+    {
+      title: "stale closure",
+      label: "잘못된 예",
+      count: count1,
+      tone: {
+        card: "border-rose-200 bg-rose-50/60",
+        label: "bg-rose-100 text-rose-700",
+        counter: "border-rose-200 bg-white text-rose-700",
+        divider: "border-rose-200/70",
+      },
+      description:
+        "빈 의존성 배열에서 만든 콜백이 첫 렌더 시점의 count1 값을 계속 참조합니다.",
+      note: "처음 값 0을 기준으로 계산하기 때문에 보통 1에서 멈춘 것처럼 보입니다.",
+    },
+    {
+      title: "functional update",
+      label: "권장 방식",
+      count: count2,
+      tone: {
+        card: "border-emerald-200 bg-emerald-50/60",
+        label: "bg-emerald-100 text-emerald-700",
+        counter: "border-emerald-200 bg-white text-emerald-700",
+        divider: "border-emerald-200/70",
+      },
+      description:
+        "이전 상태를 인자로 받는 함수형 업데이트를 사용해 최신 값을 기준으로 증가시킵니다.",
+      note: "상태 누적 업데이트에서 stale closure를 피하기 가장 실용적인 방식입니다.",
+    },
+    {
+      title: "dependency sync",
+      label: "대안",
+      count: count3,
+      tone: {
+        card: "border-sky-200 bg-sky-50/60",
+        label: "bg-sky-100 text-sky-700",
+        counter: "border-sky-200 bg-white text-sky-700",
+        divider: "border-sky-200/70",
+      },
+      description:
+        "count3를 의존성에 넣어 effect를 다시 실행하면서 최신 값을 반영합니다.",
+      note: "동작은 맞지만 count3가 바뀔 때마다 기존 interval을 정리하고 새 interval을 등록합니다. 이 cleanup과 재등록 사이의 비용 때문에 tick 간격이 조금씩 밀릴 수 있습니다.",
+    },
+  ];
+
   return (
     <div className="space-y-8">
-      <header className="space-y-4">
-        <div className="inline-flex rounded-full border border-rose-200 bg-rose-50 px-4 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-rose-700">
-          React Closure Lab
-        </div>
-        <div className="space-y-3">
-          <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-            Stale Closure 실습
-          </h2>
-          <p className="max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
-            <code>useEffect</code> 안의 콜백이 처음 렌더 시점의 값을 캡처하면 최신 상태를
-            보지 못할 수 있습니다. 아래 세 카운터는 같은 타이머 예제지만, 상태를 읽는
-            방식에 따라 결과가 어떻게 달라지는지 비교합니다.
-          </p>
-        </div>
-      </header>
-
       <section className="grid gap-4 md:grid-cols-3">
-        <article className="rounded-[24px] border border-rose-200 bg-gradient-to-b from-rose-50 to-white p-5 shadow-sm">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-rose-700">
-            stale closure
-          </p>
-          <p className="mb-4 text-sm leading-6 text-slate-600">
-            빈 의존성 배열에서 만든 콜백이 처음의 <code>count1</code> 값을 계속 참조합니다.
-          </p>
-          <div className="rounded-2xl bg-slate-950 px-4 py-5 text-center text-4xl font-black text-white">
-            {count1}
-          </div>
-          <p className="mt-4 text-sm leading-6 text-slate-500">
-            첫 렌더의 값인 <code>0</code>을 기준으로만 계산해서 보통 <code>1</code>에서
-            멈춘 것처럼 보입니다.
-          </p>
-        </article>
+        {examples.map((example) => (
+          <article
+            className={`rounded-2xl border p-5 ${example.tone.card}`}
+            key={example.title}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p
+                  className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium uppercase tracking-[0.14em] ${example.tone.label}`}
+                >
+                  {example.label}
+                </p>
+                <h2 className="mt-2 text-lg font-semibold tracking-tight text-slate-950">
+                  {example.title}
+                </h2>
+              </div>
+              <div
+                className={`rounded-xl border px-4 py-2 text-2xl font-semibold tabular-nums ${example.tone.counter}`}
+              >
+                {example.count}
+              </div>
+            </div>
 
-        <article className="rounded-[24px] border border-emerald-200 bg-gradient-to-b from-emerald-50 to-white p-5 shadow-sm">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
-            functional update
-          </p>
-          <p className="mb-4 text-sm leading-6 text-slate-600">
-            이전 상태를 인자로 받는 함수형 업데이트를 사용해 항상 최신 값을 기준으로
-            증가시킵니다.
-          </p>
-          <div className="rounded-2xl bg-slate-950 px-4 py-5 text-center text-4xl font-black text-white">
-            {count2}
-          </div>
-          <p className="mt-4 text-sm leading-6 text-slate-500">
-            stale closure 문제를 가장 안전하게 피하는 대표적인 방식입니다.
-          </p>
-        </article>
-
-        <article className="rounded-[24px] border border-sky-200 bg-gradient-to-b from-sky-50 to-white p-5 shadow-sm">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-sky-700">
-            dependency sync
-          </p>
-          <p className="mb-4 text-sm leading-6 text-slate-600">
-            <code>count3</code>를 의존성에 넣어 effect를 다시 실행하면서 최신 값을 반영합니다.
-          </p>
-          <div className="rounded-2xl bg-slate-950 px-4 py-5 text-center text-4xl font-black text-white">
-            {count3}
-          </div>
-          <p className="mt-4 text-sm leading-6 text-slate-500">
-            동작은 맞지만 매번 interval을 새로 등록하므로 함수형 업데이트보다 부담이 큽니다.
-          </p>
-        </article>
+            <p className="mt-5 text-sm leading-6 text-slate-600">
+              {example.description}
+            </p>
+            <p
+              className={`mt-4 border-t pt-4 text-sm leading-6 text-slate-500 ${example.tone.divider}`}
+            >
+              {example.note}
+            </p>
+          </article>
+        ))}
       </section>
 
-      <section className="rounded-[24px] border border-slate-200 bg-slate-50/80 p-5">
-        <h3 className="mb-3 text-lg font-bold text-slate-900">정리</h3>
-        <ul className="space-y-2 text-sm leading-6 text-slate-600">
+      <section className="rounded-2xl border border-indigo-200 bg-indigo-50/70 p-5">
+        <h2 className="text-base font-semibold text-indigo-950">정리</h2>
+        <ul className="mt-4 space-y-2 text-sm leading-6 text-slate-600">
           <li>
-            stale closure는 비동기 콜백이 예전 렌더의 상태를 기억하면서 생깁니다.
+            stale closure는 비동기 콜백이 이전 렌더의 상태를 기억하면서 생깁니다.
           </li>
           <li>
-            상태 누적 업데이트는 함수형 업데이트 <code>setState(prev =&gt; ...)</code>가
-            가장 실용적입니다.
+            상태 누적 업데이트는 <code>setState(prev =&gt; ...)</code> 형태가 안전합니다.
           </li>
           <li>
-            의존성 배열을 늘려 최신 값을 맞출 수도 있지만 effect 재실행 비용을 같이
-            고려해야 합니다.
-          </li>
-          <li>
-            지금 예제의 <code>count3</code>처럼 의존성으로 상태를 맞추면 매 tick마다
-            기존 interval을 정리하고 다시 등록하므로, UI에서 증가 속도가 덜 안정적으로
-            보일 수 있습니다.
+            의존성 배열로 최신 값을 맞출 수도 있지만 effect 재실행 비용을 함께 고려해야
+            합니다.
           </li>
         </ul>
+
+        <div className="mt-5 grid gap-3 border-t border-indigo-200 pt-5 md:grid-cols-2">
+          <div className="rounded-xl bg-white/70 p-4">
+            <h3 className="text-sm font-semibold text-emerald-800">
+              functional update가 적합한 경우
+            </h3>
+            <ul className="mt-3 space-y-1.5 text-sm leading-6 text-slate-600">
+              <li>이전 상태를 기준으로 값을 누적해서 변경할 때</li>
+              <li>interval, timeout, 이벤트 콜백 안에서 state를 업데이트할 때</li>
+              <li>effect를 다시 실행할 필요 없이 최신 상태만 필요할 때</li>
+            </ul>
+          </div>
+
+          <div className="rounded-xl bg-white/70 p-4">
+            <h3 className="text-sm font-semibold text-sky-800">
+              dependency sync가 필요한 경우
+            </h3>
+            <ul className="mt-3 space-y-1.5 text-sm leading-6 text-slate-600">
+              <li>state나 props 변경에 맞춰 effect 자체를 다시 실행해야 할 때</li>
+              <li>최신 값으로 구독, 요청, 타이머를 다시 설정해야 할 때</li>
+              <li>cleanup 후 새 외부 리소스를 연결해야 할 때</li>
+            </ul>
+          </div>
+        </div>
       </section>
     </div>
   );

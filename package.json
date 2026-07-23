@@ -4,6 +4,8 @@
   "description": "프론트엔드 개발에 필요한 핵심 개념을 30일 동안 체계적으로 학습하고, 실제 프로젝트와 연결해 정리하는 학습 저장소입니다.",
   "main": "index.js",
   "scripts": {
+    "react": "npm --prefix playgrounds/react run dev",
+    "next": "npm --prefix playgrounds/next run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
