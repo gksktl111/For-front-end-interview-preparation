@@ -1,0 +1,7 @@
+{
+  "watch": ["playgrounds/ts"],
+  "ext": "ts,json",
+  "execMap": {
+    "ts": "node"
+  }
+}
