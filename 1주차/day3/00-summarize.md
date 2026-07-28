@@ -8,10 +8,10 @@
 
 ## 상세 개념 파일
 
-- [값, 참조, 복사](./value-reference-copy.md)
-- [React 상태와 불변성](./react-immutability.md)
-- [배열 메서드 선택](./array-methods.md)
-- [안전한 접근과 기본값 처리](./safe-access-defaults.md)
+- [값, 참조, 복사](./01-value-reference-copy.md)
+- [React 상태와 불변성](./02-react-immutability.md)
+- [배열 메서드 선택](./03-array-methods.md)
+- [안전한 접근과 기본값 처리](./04-safe-access-defaults.md)
 
 ## 실행 예시
 

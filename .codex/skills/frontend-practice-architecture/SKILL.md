@@ -138,3 +138,24 @@ AsyncErrorHandling
 RenderOptimization
 ServerComponentBoundary
 ```
+
+## Commit Message Guidance
+
+Use Korean commit messages in a consistent one-line format:
+
+```text
+유형: 변경 요약
+```
+
+Recommended types:
+
+- `초기`: repository initialization
+- `문서`: study notes, summaries, interview material, README updates
+- `실습`: React, Next.js, TypeScript, or JavaScript playground examples
+- `설정`: package, TypeScript, build, or tool configuration
+- `수정`: bug fixes and incorrect behavior corrections
+- `정리`: file renames, route organization, or structural cleanup
+
+Keep the summary concise and specific. Prefer Korean wording for both the type
+and summary, and avoid mixed English commit messages unless a technical name is
+the clearest label.

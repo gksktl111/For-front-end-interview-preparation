@@ -8,10 +8,10 @@
 
 ## 상세 개념 파일
 
-- [TypeScript 타입 시스템 기본](./typescript-type-system.md)
-- [유니언과 타입 좁히기](./union-narrowing.md)
-- [반환 타입과 상태 모델링](./return-type-state-modeling.md)
-- [제네릭, interface, type](./generics-interface-type.md)
+- [TypeScript 타입 시스템 기본](./01-typescript-type-system.md)
+- [유니언과 타입 좁히기](./02-union-narrowing.md)
+- [반환 타입과 상태 모델링](./03-return-type-state-modeling.md)
+- [제네릭, interface, type](./04-generics-interface-type.md)
 
 ## 실행 예시
 
