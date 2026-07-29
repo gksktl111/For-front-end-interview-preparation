@@ -203,7 +203,7 @@ Normal Flow는 별도 배치 규칙을 주지 않았을 때 문서가 자연스�
 | --- | --- |
 | `static` | 기본값, Normal Flow를 따른다 |
 | `relative` | 원래 위치를 기준으로 이동하고, 원래 자리 공간은 유지된다 |
-| `absolute` | 가장 가까운 positioned ancestor를 기준으로 배치되고, 흐름에서 빠진다 |
+| `absolute` | 가장 가까운 `position: static`이 아닌 조상을 기준으로 배치되고, 흐름에서 빠진다. 보통 기준이 될 부모에 `position: relative`를 준다 |
 | `fixed` | viewport를 기준으로 고정된다 |
 | `sticky` | 스크롤 위치에 따라 흐름 배치와 고정 배치를 오간다 |
 
