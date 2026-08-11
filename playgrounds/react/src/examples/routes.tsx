@@ -7,6 +7,10 @@ import BoxModelInspector from "./1주차/day5/BoxModelInspector";
 import LongTaskPlayground from "./1주차/day5/LongTaskPlayground";
 import ScriptLoadingComparison from "./1주차/day5/ScriptLoadingComparison";
 import SemanticElementsComparison from "./1주차/day5/SemanticElementsComparison";
+import ListKeyReconciliationLab from "./2주차/day8/ListKeyReconciliationLab";
+import ParentChildRenderLab from "./2주차/day8/ParentChildRenderLab";
+import ProfileIdentityLab from "./2주차/day8/ProfileIdentityLab";
+import StateSnapshotQueueLab from "./2주차/day8/StateSnapshotQueueLab";
 
 export type PracticeRoute = {
   title: string;
@@ -110,6 +114,49 @@ export const practiceRoutes: WeekRouteGroup[] = [
               "Main Thread를 점유하는 긴 JavaScript Task가 버튼 반응과 렌더링을 어떻게 지연시키는지 확인합니다.",
             path: "/week1/day5/long-task-playground",
             Component: LongTaskPlayground,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "2주차",
+    description: "React 렌더링 모델과 컴포넌트 상태 설계를 다룹니다.",
+    path: "/week2",
+    days: [
+      {
+        title: "day8",
+        description:
+          "Render와 Commit, State Snapshot, Update Queue, key와 Identity를 화면에서 실습합니다.",
+        path: "/week2/day8",
+        practices: [
+          {
+            title: "State Snapshot과 Update Queue",
+            description:
+              "setState 직후 현재 Snapshot이 유지되는 이유와 값 기반 업데이트, 함수형 업데이트의 차이를 비교합니다.",
+            path: "/week2/day8/state-snapshot-queue",
+            Component: StateSnapshotQueueLab,
+          },
+          {
+            title: "부모와 자식 리렌더링",
+            description:
+              "부모 State 변경으로 자식 컴포넌트 함수가 다시 실행되는 흐름을 render count로 확인합니다.",
+            path: "/week2/day8/parent-child-render",
+            Component: ParentChildRenderLab,
+          },
+          {
+            title: "Props 변경과 key Identity",
+            description:
+              "사용자 전환 시 Props만 바뀌는 경우와 key가 바뀌는 경우의 로컬 State 보존 차이를 비교합니다.",
+            path: "/week2/day8/profile-identity-key",
+            Component: ProfileIdentityLab,
+          },
+          {
+            title: "목록 key와 Reconciliation",
+            description:
+              "index key와 stable id key를 비교해 Row 로컬 State가 데이터에 붙는지 위치에 붙는지 확인합니다.",
+            path: "/week2/day8/list-key-reconciliation",
+            Component: ListKeyReconciliationLab,
           },
         ],
       },
