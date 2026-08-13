@@ -108,6 +108,8 @@ Prefer short bullet lists over long paragraphs.
 - Do not add routing dependencies unless the project already uses one or the user asks for it.
 - Validate with the relevant build command when package scripts are available.
 - If the current repository has a route registry, extend it instead of creating a second one.
+- If you start a local dev server for validation, close that dev server before the final response unless the user explicitly asks to keep it running.
+- After closing a validation dev server, check for leftover matching dev-server processes when there was evidence of a port conflict or another server may still be running.
 
 ## Mock API Pattern
 
