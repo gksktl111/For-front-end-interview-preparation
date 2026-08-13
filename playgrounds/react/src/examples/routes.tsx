@@ -11,6 +11,11 @@ import ListKeyReconciliationLab from "./2주차/day8/ListKeyReconciliationLab";
 import ParentChildRenderLab from "./2주차/day8/ParentChildRenderLab";
 import ProfileIdentityLab from "./2주차/day8/ProfileIdentityLab";
 import StateSnapshotQueueLab from "./2주차/day8/StateSnapshotQueueLab";
+import DerivedStateLab from "./2주차/day9/DerivedStateLab";
+import EventPropagationDefaultLab from "./2주차/day9/EventPropagationDefaultLab";
+import EventStateSnapshotLab from "./2주차/day9/EventStateSnapshotLab";
+import StateImmutabilityLab from "./2주차/day9/StateImmutabilityLab";
+import StateModelingLab from "./2주차/day9/StateModelingLab";
 
 export type PracticeRoute = {
   title: string;
@@ -157,6 +162,49 @@ export const practiceRoutes: WeekRouteGroup[] = [
               "index key와 stable id key를 비교해 Row 로컬 State가 데이터에 붙는지 위치에 붙는지 확인합니다.",
             path: "/week2/day8/list-key-reconciliation",
             Component: ListKeyReconciliationLab,
+          },
+        ],
+      },
+      {
+        title: "day9",
+        description:
+          "이벤트 처리, 전파 제어, State 불변성, 파생 State, 상태 구조 설계를 실습합니다.",
+        path: "/week2/day9",
+        practices: [
+          {
+            title: "이벤트 전파와 기본 동작",
+            description:
+              "중첩 클릭에서 target/currentTarget 차이, stopPropagation, preventDefault를 화면 로그로 확인합니다.",
+            path: "/week2/day9/event-propagation-default",
+            Component: EventPropagationDefaultLab,
+          },
+          {
+            title: "State 직접 변경 vs 불변 업데이트",
+            description:
+              "중첩 객체 State를 직접 수정했을 때와 새 참조로 업데이트했을 때 memoized child 반응을 비교합니다.",
+            path: "/week2/day9/state-immutability",
+            Component: StateImmutabilityLab,
+          },
+          {
+            title: "불필요한 State 제거",
+            description:
+              "price와 quantity에서 계산 가능한 totalPrice를 별도 State로 둘 때 생기는 동기화 문제를 재현합니다.",
+            path: "/week2/day9/derived-state",
+            Component: DerivedStateLab,
+          },
+          {
+            title: "불가능한 State 조합 제거",
+            description:
+              "isOpen과 selectedId를 분리한 모델과 Discriminated Union 모델을 비교합니다.",
+            path: "/week2/day9/state-modeling",
+            Component: StateModelingLab,
+          },
+          {
+            title: "이벤트 핸들러의 State Snapshot",
+            description:
+              "함수형 업데이트를 사용해도 같은 이벤트 핸들러 안의 State 값이 유지되는 이유를 로그로 확인합니다.",
+            path: "/week2/day9/event-state-snapshot",
+            Component: EventStateSnapshotLab,
           },
         ],
       },
