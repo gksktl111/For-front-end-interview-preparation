@@ -1,15 +1,18 @@
-# Day 8 빠른 복습 정리
+# Day 8 빠른 개념 복습
 
-## 학습 목표
+## 오늘의 한 문장
 
-- React의 Render Phase와 Commit Phase를 구분한다.
-- 컴포넌트가 어떤 조건에서 리렌더링되는지 설명한다.
-- 각 렌더링이 독립적인 State Snapshot을 가진다는 점을 이해한다.
-- State Update Queue와 Batching의 흐름을 설명한다.
-- React가 Component Identity를 판단하고 State를 보존하거나 초기화하는 기준을 이해한다.
-- `key`가 목록 식별자뿐 아니라 reconciliation과 state 보존에 영향을 준다는 점을 이해한다.
+> React는 State Update가 발생하면 컴포넌트를 다시 실행해 다음 UI를 계산하고, 이전 UI와 비교한 뒤 필요한 DOM 변경만 Commit한다.
 
-## 상세 개념 파일
+## 10분 복습 순서
+
+1. `Component → Render → Reconciliation → Commit` 흐름을 말로 설명한다.
+2. `setState` 직후 이전 값이 보이는 이유를 State Snapshot으로 설명한다.
+3. 값 기반 업데이트와 함수형 업데이트의 결과 차이를 코드로 설명한다.
+4. State가 보존되거나 초기화되는 기준을 위치, 타입, `key`로 설명한다.
+5. index key가 왜 위험한지 "Row 로컬 State가 데이터가 아니라 위치에 붙는다"로 설명한다.
+
+## 상세 문서와 실습
 
 - [React 렌더링 모델](./01-react-rendering-model.md)
 - [State as a Snapshot](./02-state-snapshot.md)
@@ -18,132 +21,52 @@
 - [프로젝트 연결 분석](./05-project-connection.md)
 - [Interview Practice](./06-interview.md)
 
-## 실행 예시
+React playground:
 
-React playground에서 다음 경로로 실행한다.
-
-- State Snapshot과 Update Queue: `/week2/day8/state-snapshot-queue`
-- 부모와 자식 리렌더링: `/week2/day8/parent-child-render`
-- Props 변경과 key Identity: `/week2/day8/profile-identity-key`
-- 목록 key와 Reconciliation: `/week2/day8/list-key-reconciliation`
+- `/week2/day8/state-snapshot-queue`
+- `/week2/day8/parent-child-render`
+- `/week2/day8/profile-identity-key`
+- `/week2/day8/list-key-reconciliation`
 
 ```bash
 cd playgrounds/react
 npm run dev
 ```
 
-## 1. React Component와 React Element
+## 핵심 개념 압축
 
-React Component는 UI를 계산하는 함수 또는 클래스다.
+| 개념 | 빠른 정의 | 면접에서 꼭 붙일 말 |
+| --- | --- | --- |
+| Component | UI를 계산하는 함수 또는 클래스 | Component는 정의이고 Element는 특정 시점의 UI 설명 값이다. |
+| Render | 컴포넌트 함수를 실행해 다음 React Element Tree를 계산하는 단계 | Render가 곧 DOM 변경은 아니다. |
+| Reconciliation | 이전 Tree와 다음 Tree를 비교해 변경 후보를 정하는 과정 | 타입, 위치, `key`가 Identity 판단에 중요하다. |
+| Commit | 계산된 변경을 실제 DOM에 반영하는 단계 | 실제 DOM 변경은 Commit에서 일어난다. |
+| State Snapshot | 한 렌더링 안에서 State 값이 고정되어 있는 모델 | 이벤트 핸들러는 자신이 만들어진 렌더링의 값을 읽는다. |
+| Update Queue | State Update가 렌더링 전에 쌓이는 구조 | 함수형 업데이트는 Queue의 이전 결과를 이어받는다. |
+| Batching | 여러 업데이트를 한 번의 렌더링으로 묶는 처리 | Snapshot과 Batching은 다른 개념이다. |
+| key | 형제 Element 사이의 Identity 정보 | 목록뿐 아니라 State 보존과 초기화에도 영향을 준다. |
+
+## 코드로 바로 설명하기
+
+### 1. `setState` 직후 이전 값
 
 ```tsx
-function Greeting({ name }: { name: string }) {
-  return <h1>Hello, {name}</h1>;
+const [count, setCount] = useState(0);
+
+function handleClick() {
+  setCount(count + 1);
+  console.log(count);
 }
 ```
 
-React Element는 컴포넌트를 실행하거나 JSX를 해석해서 만들어지는 UI 설명 객체다.
+답변 뼈대:
 
-```tsx
-const element = <Greeting name="React" />;
-```
+- `handleClick`은 현재 렌더링에서 만들어진 함수다.
+- 함수 안의 `count`는 현재 렌더링의 Snapshot이다.
+- `setCount`는 현재 변수를 바꾸지 않고 다음 렌더링을 요청한다.
+- 그래서 로그는 이전 값이고, 새 값은 다음 렌더링에서 읽는다.
 
-핵심:
-
-- Component는 UI를 만드는 정의다.
-- Element는 특정 시점의 UI를 설명하는 값이다.
-- 렌더링은 Component를 실행해 새로운 Element Tree를 계산하는 과정이다.
-
-## 2. 렌더링이 발생하는 주요 조건
-
-컴포넌트는 다음 조건에서 리렌더링될 수 있다.
-
-- 자신의 State가 변경된다.
-- 부모 컴포넌트가 리렌더링된다.
-- 구독 중인 Context 값이 변경된다.
-- `useSyncExternalStore` 같은 외부 Store 구독 값이 변경된다.
-
-주의할 점:
-
-- Props가 같아도 부모가 리렌더링되면 자식 컴포넌트 함수가 다시 실행될 수 있다.
-- 리렌더링은 DOM 전체 재생성을 의미하지 않는다.
-- 실제 DOM 변경 여부는 reconciliation 이후 Commit Phase에서 결정된다.
-
-## 3. Render와 Commit
-
-React 업데이트 흐름은 다음처럼 이해할 수 있다.
-
-```text
-State Update
-→ Render
-→ 새로운 UI 표현 계산
-→ Reconciliation
-→ 변경점 결정
-→ Commit
-→ 필요한 DOM 변경
-```
-
-Render Phase:
-
-- 컴포넌트 함수를 실행한다.
-- 새로운 React Element Tree를 계산한다.
-- 이전 Tree와 비교할 후보를 만든다.
-- 이 단계에서는 실제 DOM을 직접 변경하지 않는다.
-
-Reconciliation:
-
-- 이전 Element Tree와 다음 Element Tree를 비교한다.
-- 컴포넌트 타입, 위치, `key` 등을 기준으로 어떤 노드를 유지할지 판단한다.
-- 필요한 변경 작업을 계산한다.
-
-Commit Phase:
-
-- 계산된 변경 사항을 실제 DOM에 반영한다.
-- 필요하면 ref를 연결하고 Effect 실행 준비가 이어진다.
-
-핵심 문장:
-
-> 컴포넌트가 리렌더링되었다고 해서 실제 DOM이 모두 다시 생성되는 것은 아니다.
-
-## 4. State as a Snapshot
-
-각 렌더링은 그 시점의 State 값을 가진다.
-
-```tsx
-import { useState } from "react";
-
-export function Counter() {
-  const [count, setCount] = useState(0);
-
-  const handleIncrease = () => {
-    setCount(count + 1);
-    console.log("current snapshot:", count);
-  };
-
-  return (
-    <button type="button" onClick={handleIncrease}>
-      {count}
-    </button>
-  );
-}
-```
-
-`console.log(count)`가 이전 값을 출력하는 이유:
-
-- 이벤트 핸들러는 자신이 만들어진 렌더링의 State Snapshot을 참조한다.
-- `setCount`는 현재 `count` 변수를 직접 바꾸지 않는다.
-- `setCount`는 다음 렌더링을 요청한다.
-- 새로운 State 값은 다음 렌더링에서 사용할 수 있다.
-
-정확한 표현:
-
-> `setState` 직후 값이 바뀌지 않는 이유를 단순히 "비동기라서"라고 설명하기보다, 현재 핸들러가 현재 렌더링의 Snapshot을 사용하기 때문이라고 설명해야 한다.
-
-## 5. State Update Queue와 Batching
-
-State Update는 즉시 변수 값을 바꾸는 것이 아니라 Queue에 등록된다. React는 여러 업데이트를 모아 한 번의 렌더링으로 처리할 수 있다.
-
-값 기반 업데이트:
+### 2. 값 기반 업데이트 vs 함수형 업데이트
 
 ```tsx
 setCount(count + 1);
@@ -151,17 +74,7 @@ setCount(count + 1);
 setCount(count + 1);
 ```
 
-현재 `count`가 `0`이면 위 코드는 사실상 다음과 같다.
-
-```tsx
-setCount(1);
-setCount(1);
-setCount(1);
-```
-
-결과는 `+3`이 아니라 `+1`이다.
-
-함수형 업데이트:
+현재 `count`가 `0`이면 결과는 `1`이다.
 
 ```tsx
 setCount((previousCount) => previousCount + 1);
@@ -169,118 +82,66 @@ setCount((previousCount) => previousCount + 1);
 setCount((previousCount) => previousCount + 1);
 ```
 
-Queue에서 이전 업데이트 결과를 이어받는다.
+현재 `count`가 `0`이면 결과는 `3`이다.
 
-```text
-0 → 1 → 2 → 3
-```
+정리:
 
-구분:
+- 값 기반 업데이트는 같은 Snapshot 값을 읽는다.
+- 함수형 업데이트는 Queue에서 직전 업데이트 결과를 인자로 받는다.
 
-```text
-State Snapshot
-→ 각 업데이트가 어떤 값을 참조하는가?
-
-Batching
-→ 여러 업데이트를 언제 렌더링으로 반영하는가?
-```
-
-## 6. State 보존과 Component Identity
-
-React는 State를 컴포넌트 함수 자체가 아니라 UI Tree상의 위치와 Identity에 연결해서 관리한다.
+### 3. Props 변경과 State 보존
 
 ```tsx
 <UserProfile userId={selectedUserId} />
 ```
 
-Props만 바뀌면 같은 위치의 같은 컴포넌트로 판단되어 내부 State가 유지될 수 있다.
+- 같은 위치의 같은 컴포넌트면 Props가 바뀌어도 내부 State가 보존될 수 있다.
 
 ```tsx
 <UserProfile key={selectedUserId} userId={selectedUserId} />
 ```
 
-`key`가 바뀌면 React는 다른 Identity로 판단할 수 있고, 기존 State를 버리고 새 State로 시작한다.
+- `key`가 바뀌면 다른 Identity로 판단되어 State가 초기화될 수 있다.
 
-정리:
+## 헷갈리기 쉬운 표현 교정
 
-```text
-Props 변경
-→ 같은 위치의 같은 Identity
-→ State 유지 가능
+| 부정확한 표현 | 더 정확한 표현 |
+| --- | --- |
+| `setState`는 비동기라서 바로 안 바뀐다. | 현재 핸들러는 현재 렌더링의 State Snapshot을 읽고, `setState`는 다음 렌더링을 요청한다. |
+| 리렌더링되면 DOM이 전부 다시 만들어진다. | 리렌더링은 다음 UI를 계산하는 과정이고, 실제 DOM 변경은 Commit에서 필요한 부분만 일어난다. |
+| Props가 바뀌면 자식 State가 초기화된다. | 같은 위치의 같은 Identity면 Props가 바뀌어도 State가 보존될 수 있다. |
+| `key`는 warning 제거용이다. | `key`는 형제 Element 사이의 Identity 정보이며 reconciliation과 State 보존에 영향을 준다. |
+| index key는 항상 나쁘다. | 정렬, 삽입, 삭제, 필터링이 있는 목록에서 Row 로컬 State가 있으면 위험하다. |
 
-key 변경
-→ 다른 Identity
-→ State 초기화 가능
-```
+## 프로젝트 점검 질문
 
-## 7. `key`와 Reconciliation
-
-`key`는 형제 Element 사이에서 이전 Element와 다음 Element를 대응시키는 Identity 정보다.
-
-```tsx
-items.map((item) => <Item key={item.id} item={item} />);
-```
-
-`key`가 중요한 상황:
-
-- 목록 추가
-- 목록 삭제
-- 정렬
-- 순서 변경
-- 필터링
-
-배열 index를 `key`로 쓰면 목록 순서가 바뀔 때 "같은 데이터"가 아니라 "같은 위치"를 같은 컴포넌트로 오해할 수 있다. 각 Row가 로컬 State를 가지고 있으면 입력값, 체크 상태, 포커스 등이 다른 데이터에 붙는 문제가 생길 수 있다.
-
-## 8. 코드 실습 체크
-
-오늘 확인할 실습:
-
-- State Snapshot 확인
-- 값 기반 업데이트와 함수형 업데이트 비교
-- 부모 리렌더링 시 자식 컴포넌트 실행 확인
-- `key` 변경으로 State 초기화하기
-- index key로 목록 State가 잘못 매칭되는 문제 재현하기
-
-`React.memo`는 이번 Day에서는 존재만 확인한다. 자세한 최적화 기준은 렌더링 최적화 파트에서 다룬다.
-
-## 9. 프로젝트 연결 기준
-
-프로젝트 코드를 볼 때는 발견한 코드를 바로 수정하지 말고 다음 순서로 분석한다.
+코드를 볼 때 바로 수정하지 말고 이 순서로 판단한다.
 
 ```text
-현재 동작
+현재 동작은 무엇인가?
 ↓
-React가 이렇게 동작하는 이유
+React가 이렇게 동작하는 이유는 무엇인가?
 ↓
-실제로 문제가 되는가?
+실제로 사용자에게 문제가 되는가?
 ↓
 수정이 필요한가?
 ```
 
-먼저 찾아볼 코드:
+찾아볼 패턴:
 
-- 이전 State를 기반으로 갱신하면서 값 기반 `setState`를 사용하는 코드
-- 동일 이벤트에서 여러 번 `setState` 하는 코드
-- 변경·삭제·정렬 가능한 목록에서 배열 index를 `key`로 사용하는 코드
-- 안정적이지 않은 값을 `key`로 사용하는 코드
-- 사용자·탭·모달 전환에서 State가 의도치 않게 보존되거나 초기화되는 컴포넌트
-- 부모 State 변경으로 자식 컴포넌트가 함께 리렌더링되는 구조
+- 이전 State를 기반으로 갱신하면서 `setValue(value + 1)`처럼 값 기반 업데이트를 쓰는 코드
+- 같은 이벤트에서 같은 State를 여러 번 업데이트하는 코드
+- 변경, 삭제, 정렬 가능한 목록에서 index key를 쓰는 코드
+- 사용자, 탭, 모달 전환 시 내부 입력 State가 의도치 않게 유지되는 컴포넌트
+- `key` 변경으로 필요 이상 State가 초기화되는 컴포넌트
+- 부모 State 변경 때문에 자식 함수가 다시 실행되는 구조
 
-## 완료 조건
+## 완료 체크
 
-- [ ] React Component와 React Element의 차이를 설명할 수 있다.
-- [ ] 컴포넌트가 리렌더링되는 주요 조건을 설명할 수 있다.
-- [ ] Render Phase와 Commit Phase를 구분할 수 있다.
-- [ ] 리렌더링과 실제 DOM 업데이트가 다른 개념임을 설명할 수 있다.
-- [ ] Reconciliation의 목적을 설명할 수 있다.
-- [ ] State Snapshot을 이벤트 핸들러와 연결하여 설명할 수 있다.
-- [ ] State Update Queue와 Batching의 역할을 구분할 수 있다.
-- [ ] 값 기반 업데이트와 함수형 업데이트의 차이를 코드로 설명할 수 있다.
-- [ ] State가 보존되거나 초기화되는 조건을 설명할 수 있다.
-- [ ] `key`와 Component Identity의 관계를 설명할 수 있다.
-- [ ] 배열 index를 `key`로 사용했을 때 실제 문제가 발생하는 사례를 설명할 수 있다.
-- [ ] 프로젝트 코드에서 렌더링·State·Identity 관련 문제를 최소 1개 분석할 수 있다.
-
-## Day 8의 핵심 한 문장
-
-> React의 State는 각 렌더링의 Snapshot이며, State Update는 새로운 렌더링을 요청하고, React는 Reconciliation을 거쳐 필요한 변경만 Commit한다.
+- [ ] Render와 Commit을 구분해 설명할 수 있다.
+- [ ] 리렌더링과 실제 DOM 업데이트가 다르다고 설명할 수 있다.
+- [ ] State Snapshot으로 `setState` 직후 로그를 설명할 수 있다.
+- [ ] 값 기반 업데이트와 함수형 업데이트의 결과 차이를 설명할 수 있다.
+- [ ] Batching과 Snapshot을 구분할 수 있다.
+- [ ] State 보존 기준을 위치, 타입, `key`로 설명할 수 있다.
+- [ ] index key의 실제 문제를 예시로 설명할 수 있다.
