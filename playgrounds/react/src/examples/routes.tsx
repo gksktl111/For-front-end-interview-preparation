@@ -16,6 +16,12 @@ import EventPropagationDefaultLab from "./2주차/day9/EventPropagationDefaultLa
 import EventStateSnapshotLab from "./2주차/day9/EventStateSnapshotLab";
 import StateImmutabilityLab from "./2주차/day9/StateImmutabilityLab";
 import StateModelingLab from "./2주차/day9/StateModelingLab";
+import ContextScopeLab from "./2주차/day10/ContextScopeLab";
+import LiftingStateUpLab from "./2주차/day10/LiftingStateUpLab";
+import PropsCompositionLab from "./2주차/day10/PropsCompositionLab";
+import ServerStateCopyLab from "./2주차/day10/ServerStateCopyLab";
+import SingleSourceTruthLab from "./2주차/day10/SingleSourceTruthLab";
+import StateOwnershipLab from "./2주차/day10/StateOwnershipLab";
 
 export type PracticeRoute = {
   title: string;
@@ -205,6 +211,56 @@ export const practiceRoutes: WeekRouteGroup[] = [
               "함수형 업데이트를 사용해도 같은 이벤트 핸들러 안의 State 값이 유지되는 이유를 로그로 확인합니다.",
             path: "/week2/day9/event-state-snapshot",
             Component: EventStateSnapshotLab,
+          },
+        ],
+      },
+      {
+        title: "day10",
+        description:
+          "State Ownership, 단일 Source of Truth, 공유 State, Composition, Context, Server State를 실습합니다.",
+        path: "/week2/day10",
+        practices: [
+          {
+            title: "State Ownership 찾기",
+            description:
+              "검색 입력과 결과가 같은 keyword를 쓸 때 State를 어느 컴포넌트까지 올려야 하는지 비교합니다.",
+            path: "/week2/day10/state-ownership",
+            Component: StateOwnershipLab,
+          },
+          {
+            title: "Props 복사와 Source of Truth",
+            description:
+              "Props를 useState 초기값으로 복사했을 때 부모 user 변경이 Local State에 반영되지 않는 이유를 확인합니다.",
+            path: "/week2/day10/single-source-of-truth",
+            Component: SingleSourceTruthLab,
+          },
+          {
+            title: "Lifting State Up과 공유 Counter",
+            description:
+              "독립 Counter 두 개와 공통 부모의 count를 공유하는 Counter 두 개를 비교합니다.",
+            path: "/week2/day10/lifting-state-up",
+            Component: LiftingStateUpLab,
+          },
+          {
+            title: "Props Drilling과 Composition",
+            description:
+              "중간 컴포넌트가 user를 전달만 하는 구조와 UI slot을 주입하는 구조를 비교합니다.",
+            path: "/week2/day10/props-composition",
+            Component: PropsCompositionLab,
+          },
+          {
+            title: "Context 범위와 Consumer 영향",
+            description:
+              "하나의 큰 Context와 책임별 Context에서 설정 변경이 Consumer에 미치는 차이를 확인합니다.",
+            path: "/week2/day10/context-scope",
+            Component: ContextScopeLab,
+          },
+          {
+            title: "Server State 복제 문제",
+            description:
+              "React Query의 query data를 그대로 쓸 때와 Local State로 복사할 때 서버 갱신 반응을 비교합니다.",
+            path: "/week2/day10/server-state-copy",
+            Component: ServerStateCopyLab,
           },
         ],
       },
