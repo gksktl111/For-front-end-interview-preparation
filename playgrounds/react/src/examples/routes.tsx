@@ -16,6 +16,12 @@ import EventPropagationDefaultLab from "./2주차/day9/EventPropagationDefaultLa
 import EventStateSnapshotLab from "./2주차/day9/EventStateSnapshotLab";
 import StateImmutabilityLab from "./2주차/day9/StateImmutabilityLab";
 import StateModelingLab from "./2주차/day9/StateModelingLab";
+import AbortControllerLab from "./2주차/day11/AbortControllerLab";
+import CleanupStrictModeLab from "./2주차/day11/CleanupStrictModeLab";
+import EffectRaceConditionLab from "./2주차/day11/EffectRaceConditionLab";
+import EffectSynchronizationLab from "./2주차/day11/EffectSynchronizationLab";
+import EventHandlerVsEffectLab from "./2주차/day11/EventHandlerVsEffectLab";
+import StaleClosureDependenciesLab from "./2주차/day11/StaleClosureDependenciesLab";
 import ContextScopeLab from "./2주차/day10/ContextScopeLab";
 import LiftingStateUpLab from "./2주차/day10/LiftingStateUpLab";
 import PropsCompositionLab from "./2주차/day10/PropsCompositionLab";
@@ -261,6 +267,56 @@ export const practiceRoutes: WeekRouteGroup[] = [
               "React Query의 query data를 그대로 쓸 때와 Local State로 복사할 때 서버 갱신 반응을 비교합니다.",
             path: "/week2/day10/server-state-copy",
             Component: ServerStateCopyLab,
+          },
+        ],
+      },
+      {
+        title: "day11",
+        description:
+          "useEffect의 동기화 목적, Dependency, Cleanup, 비동기 요청 수명과 Race Condition을 실습합니다.",
+        path: "/week2/day11",
+        practices: [
+          {
+            title: "Effect와 외부 시스템 동기화",
+            description:
+              "React count를 browser document.title과 맞추는 Effect와 렌더링 중 계산하는 파생 값을 비교합니다.",
+            path: "/week2/day11/effect-synchronization",
+            Component: EffectSynchronizationLab,
+          },
+          {
+            title: "Event Handler와 Effect 구분",
+            description:
+              "삭제처럼 사용자 클릭이 원인인 작업을 flag State + Effect 구조와 Event Handler 구조로 비교합니다.",
+            path: "/week2/day11/event-handler-vs-effect",
+            Component: EventHandlerVsEffectLab,
+          },
+          {
+            title: "Cleanup과 StrictMode",
+            description:
+              "window resize listener의 setup과 cleanup을 mount, unmount, 이벤트 trace로 관찰합니다.",
+            path: "/week2/day11/cleanup-strict-mode",
+            Component: CleanupStrictModeLab,
+          },
+          {
+            title: "stale closure와 Dependency",
+            description:
+              "timer callback이 캡처한 이전 State와 [count] dependency로 재연결한 최신 State를 비교합니다.",
+            path: "/week2/day11/stale-closure-dependencies",
+            Component: StaleClosureDependenciesLab,
+          },
+          {
+            title: "Effect 요청 Race Condition",
+            description:
+              "느린 이전 요청이 빠른 최신 요청을 덮어쓰는 현상과 cleanup 기반 응답 무시를 재현합니다.",
+            path: "/week2/day11/effect-race-condition",
+            Component: EffectRaceConditionLab,
+          },
+          {
+            title: "AbortController로 요청 취소",
+            description:
+              "Effect cleanup에서 AbortController로 이전 fetch를 취소하고 HTTP 오류를 분리해 처리합니다.",
+            path: "/week2/day11/abort-controller",
+            Component: AbortControllerLab,
           },
         ],
       },
