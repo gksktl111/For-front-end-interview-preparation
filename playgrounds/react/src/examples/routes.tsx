@@ -16,6 +16,11 @@ import EventPropagationDefaultLab from "./2주차/day9/EventPropagationDefaultLa
 import EventStateSnapshotLab from "./2주차/day9/EventStateSnapshotLab";
 import StateImmutabilityLab from "./2주차/day9/StateImmutabilityLab";
 import StateModelingLab from "./2주차/day9/StateModelingLab";
+import ComponentBoundaryLab from "./2주차/day12/ComponentBoundaryLab";
+import CompositionSlotsLab from "./2주차/day12/CompositionSlotsLab";
+import ConditionalResultsLab from "./2주차/day12/ConditionalResultsLab";
+import CustomHookSelectionLab from "./2주차/day12/CustomHookSelectionLab";
+import HookCallOrderLab from "./2주차/day12/HookCallOrderLab";
 import AbortControllerLab from "./2주차/day11/AbortControllerLab";
 import CleanupStrictModeLab from "./2주차/day11/CleanupStrictModeLab";
 import EffectRaceConditionLab from "./2주차/day11/EffectRaceConditionLab";
@@ -317,6 +322,49 @@ export const practiceRoutes: WeekRouteGroup[] = [
               "Effect cleanup에서 AbortController로 이전 fetch를 취소하고 HTTP 오류를 분리해 처리합니다.",
             path: "/week2/day11/abort-controller",
             Component: AbortControllerLab,
+          },
+        ],
+      },
+      {
+        title: "day12",
+        description:
+          "컴포넌트 책임, Custom Hook, Hook Rules, Composition, 조건부 렌더링의 경계를 실습합니다.",
+        path: "/week2/day12",
+        practices: [
+          {
+            title: "컴포넌트 책임과 변경 영향",
+            description:
+              "하나의 UserPage에 책임이 모인 구조와 역할별 경계가 있는 구조를 요구사항 변경 영향으로 비교합니다.",
+            path: "/week2/day12/component-boundary",
+            Component: ComponentBoundaryLab,
+          },
+          {
+            title: "Custom Hook으로 선택 상태 분리",
+            description:
+              "클립 선택과 삭제 모드의 상태 전이를 useClipSelection으로 묶어 UI와 상태 규칙의 경계를 관찰합니다.",
+            path: "/week2/day12/custom-hook-selection",
+            Component: CustomHookSelectionLab,
+          },
+          {
+            title: "Hook 호출 순서와 조건부 동작",
+            description:
+              "조건부 Hook 호출이 순서를 바꾸는 이유와 enabled 방식이 Hook 위치를 유지하는 방식을 비교합니다.",
+            path: "/week2/day12/hook-call-order",
+            Component: HookCallOrderLab,
+          },
+          {
+            title: "Props Drilling과 Composition slot",
+            description:
+              "user를 중간 계층으로 전달하는 구조와 필요한 Profile UI를 slot으로 주입하는 구조를 비교합니다.",
+            path: "/week2/day12/composition-slots",
+            Component: CompositionSlotsLab,
+          },
+          {
+            title: "조건부 결과 화면과 이름 있는 조건",
+            description:
+              "loading, error, empty, content 결과를 분리하고 canDelete 같은 의미 있는 조건을 관찰합니다.",
+            path: "/week2/day12/conditional-results",
+            Component: ConditionalResultsLab,
           },
         ],
       },
